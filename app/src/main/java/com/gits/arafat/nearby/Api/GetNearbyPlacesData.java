@@ -3,6 +3,7 @@ package com.gits.arafat.nearby.Api;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.gits.arafat.nearby.Others.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -41,10 +42,10 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String result) {
         Log.d("GooglePlacesReadTask", "onPostExecute Entered");
-        List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
-        nearbyPlacesList =  dataParser.parse(result);
-        ShowNearbyPlaces(nearbyPlacesList);
+        List<HashMap<String, String>> nearbyPlacesList = dataParser.parse(result);
+            Utility.setNearbyPlacesList(nearbyPlacesList);
+            ShowNearbyPlaces(Utility.getNearbyPlacesList());
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
 
@@ -56,15 +57,15 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
             String placeName = googlePlace.get("place_name");
-            String vicinity = googlePlace.get("vicinity");
+            //String vicinity = googlePlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(placeName + " : " + vicinity);
+            markerOptions.title(placeName);
             mMap.addMarker(markerOptions);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //mMap.animateCamera(CameraUpdateFactory.zoomTo(Utility.ZOOM));
         }
     }
 }

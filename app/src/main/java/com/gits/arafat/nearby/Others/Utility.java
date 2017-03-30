@@ -8,6 +8,9 @@ import android.support.v4.app.ActivityCompat;
 
 import com.gits.arafat.nearby.Activity.MainActivity;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by Arafat on 29/03/2017.
  */
@@ -15,10 +18,18 @@ import com.gits.arafat.nearby.Activity.MainActivity;
 public class Utility {
     public static final String GOOGLE_API_KEY =  "AIzaSyA9QPYNb1QJLI-8040iJ5cjXapiQ1xZVHA";
     public static final String PLACES_SEARCH_URL =  "https://maps.googleapis.com/maps/api/place/search/json?";
-    public static final float LOCATION_REFRESH_DISTANCE = (float) .1;
+    public static final float LOCATION_REFRESH_DISTANCE = (float) .11;
     public static final long LOCATION_REFRESH_TIME = 1000;
     public static final long RADIUS = 5000;
     public static final long ZOOM = 15;
+    private static List<HashMap<String, String>> nearbyPlacesList=null;
+
+    public static void setNearbyPlacesList(List<HashMap<String, String>> n){
+        nearbyPlacesList=n;
+    }
+    public static List<HashMap<String, String>> getNearbyPlacesList(){
+        return nearbyPlacesList;
+    }
     public static String getUrl(double latitude, double longitude, Type search) {
         // TODO: 29/03/2017
         String placesSearchStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
