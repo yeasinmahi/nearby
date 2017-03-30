@@ -1,4 +1,4 @@
-package com.gits.arafat.nearby;
+package com.gits.arafat.nearby.Api;
 
 import android.util.Log;
 
@@ -21,27 +21,16 @@ public class DownloadUrl {
         HttpURLConnection urlConnection = null;
         try {
             URL url = new URL(strUrl);
-
-            // Creating an http connection to communicate with url
             urlConnection = (HttpURLConnection) url.openConnection();
-
-            // Connecting to url
             urlConnection.connect();
-
-            // Reading data from url
             iStream = urlConnection.getInputStream();
-
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
-
             StringBuffer sb = new StringBuffer();
-
             String line = "";
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
-
             data = sb.toString();
-            Log.d("downloadUrl", data.toString());
             br.close();
 
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.gits.arafat.nearby;
+package com.gits.arafat.nearby.Api;
 
 import android.util.Log;
 
