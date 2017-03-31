@@ -1,5 +1,6 @@
 package com.gits.arafat.nearby.Api;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.gits.arafat.nearby.Others.Utility;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -41,17 +43,19 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        Log.d("GooglePlacesReadTask", "onPostExecute Entered");
-        DataParser dataParser = new DataParser();
-        List<HashMap<String, String>> nearbyPlacesList = dataParser.parse(result);
+        if (result!=null){
+            DataParser dataParser = new DataParser();
+            List<HashMap<String, String>> nearbyPlacesList = dataParser.parse(result);
             Utility.setNearbyPlacesList(nearbyPlacesList);
             ShowNearbyPlaces(Utility.getNearbyPlacesList());
-        Log.d("GooglePlacesReadTask", "onPostExecute Exit");
+        }
     }
 
     private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
+        mMap.clear();
+        Utility.addCircle(mMap);
+        Utility.moveMap(mMap);
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
-            Log.d("onPostExecute","Entered into showing locations");
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
             double lat = Double.parseDouble(googlePlace.get("lat"));

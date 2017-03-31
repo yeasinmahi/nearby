@@ -1,18 +1,15 @@
 package com.gits.arafat.nearby.Activity;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gits.arafat.nearby.Api.GetNearbyPlacesData;
@@ -25,24 +22,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
+    private Spinner spinner;
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
-    private Location currentLocation;
     private LocationManager mLocationManager;
-    Context context;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context=this;
+        init();
         Utility.getPermission(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -58,7 +54,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Utility.LOCATION_REFRESH_TIME, Utility.LOCATION_REFRESH_DISTANCE, new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                getCurrentLocation();
+                setCurrentLocation();
             }
 
             @Override
@@ -68,7 +64,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onProviderEnabled(String provider) {
-                getCurrentLocation();
+                setCurrentLocation();
+                search();
+                Utility.moveMap(mMap);
             }
 
             @Override
@@ -78,43 +76,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+    private void init(){
+        spinner= (Spinner) findViewById(R.id.searchSpinner);
+        populateSpinner();
+    }
+    private void populateSpinner(){
+        spinner.setAdapter(new ArrayAdapter<Utility.Type>(this, android.R.layout.simple_spinner_item, Utility.Type.values()));
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
         // Add a marker in Sydney and move the camera
-        LatLng dhaka = new LatLng(-23.7806286, 90.279369);
+        LatLng dhaka = new LatLng(23.7806286, 90.279369);
         mMap.addMarker(new MarkerOptions().position(dhaka).title("Marker in Dhaka"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(dhaka));
 
         if (Utility.checkLocationPermission(context)) return;
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        setCurrentLocation();
+        search();
+        Utility.moveMap(mMap);
 
     }
-    private void getCurrentLocation() {
-        mMap.clear();
+    private void setCurrentLocation() {
         if (Utility.checkLocationPermission(context)) return;
-        currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        if (currentLocation != null) {
-            //Getting longitude and latitude
-            mMap.addCircle(new CircleOptions()
-                    .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                    .radius(Utility.RADIUS)
-                    .strokeWidth((float) 1)
-                    .strokeColor(Color.BLUE)
-                    .fillColor(Color.parseColor("#80dee4ef")));
-            //moving the map to location
-            moveMap();
-            getNearbyResult(currentLocation.getLatitude(),currentLocation.getLongitude(), Utility.Type.atm);
-        }
+        Utility.setCurrentLocation(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
     }
-    private void moveMap() {
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(Utility.ZOOM));
-        //mMap.getUiSettings().setZoomControlsEnabled(true);
 
-    }
+
     private void getNearbyResult(double latitude, double longitude, Utility.Type search){
         String url = Utility.getUrl(latitude, longitude, search);
         Object[] DataTransfer = new Object[2];
@@ -123,10 +114,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
     }
+    public void onClickSearchButton(View view){
+        search();
+    }
+    public void onClickPlusButton(View view){
+        if(Utility.increaseRadious()){
+            search();
+            Utility.zoomOnRadius(mMap);
+        }
+    }
+    public void onClickMinusButton(View view){
+        if(Utility.decreaseRadious()){
+            search();
+            Utility.zoomOnRadius(mMap);
+        }
+    }
+    private void search(){
+        if (Utility.getCurrentLocation() != null) {
+            getNearbyResult(Utility.getCurrentLocation().getLatitude(),Utility.getCurrentLocation().getLongitude(), Utility.Type.valueOf(spinner.getSelectedItem().toString()));
+        }
+    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        getCurrentLocation();
+        setCurrentLocation();
+        search();
+        Utility.moveMap(mMap);
     }
 
     @Override

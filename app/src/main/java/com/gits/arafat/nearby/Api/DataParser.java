@@ -21,8 +21,11 @@ public class DataParser {
 
         try {
             Log.d("Places", "parse");
-            jsonObject = new JSONObject((String) jsonData);
-            jsonArray = jsonObject.getJSONArray("results");
+            if (jsonData!=null){
+                jsonObject = new JSONObject((String) jsonData);
+                jsonArray = jsonObject.getJSONArray("results");
+            }
+
         } catch (JSONException e) {
             Log.d("Places", "parse error");
             e.printStackTrace();
@@ -31,22 +34,24 @@ public class DataParser {
     }
 
     private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
-        int placesCount = jsonArray.length();
         List<HashMap<String, String>> placesList = new ArrayList<>();
         HashMap<String, String> placeMap = null;
         Log.d("Places", "getPlaces");
+        if (jsonArray!=null){
+            int placesCount = jsonArray.length();
+            for (int i = 0; i < placesCount; i++) {
+                try {
+                    placeMap = getPlace((JSONObject) jsonArray.get(i));
+                    placesList.add(placeMap);
+                    Log.d("Places", "Adding places");
 
-        for (int i = 0; i < placesCount; i++) {
-            try {
-                placeMap = getPlace((JSONObject) jsonArray.get(i));
-                placesList.add(placeMap);
-                Log.d("Places", "Adding places");
-
-            } catch (JSONException e) {
-                Log.d("Places", "Error in Adding places");
-                e.printStackTrace();
+                } catch (JSONException e) {
+                    Log.d("Places", "Error in Adding places");
+                    e.printStackTrace();
+                }
             }
         }
+
         return placesList;
     }
 
