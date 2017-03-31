@@ -25,8 +25,8 @@ public class Utility {
     public static final String PLACES_SEARCH_URL =  "https://maps.googleapis.com/maps/api/place/search/json?";
     public static final float LOCATION_REFRESH_DISTANCE = (float) .01;
     public static final long LOCATION_REFRESH_TIME = 1000;
-    public static int RADIUS = 5000;
-    public static  float ZOOM = 12;
+    public static int RADIUS = 2500;
+    public static  float ZOOM = 13;
     private static Location currentLocation = null;
     public static boolean increaseRadious(){
         if (RADIUS<5000){

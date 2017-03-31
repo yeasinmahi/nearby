@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -74,7 +75,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(context,"disabling gps may caused your location inaccurate",Toast.LENGTH_SHORT).show();
             }
         });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                search();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
     private void init(){
         spinner= (Spinner) findViewById(R.id.searchSpinner);
@@ -113,9 +124,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         DataTransfer[1] = url;
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
-    }
-    public void onClickSearchButton(View view){
-        search();
     }
     public void onClickPlusButton(View view){
         if(Utility.increaseRadious()){

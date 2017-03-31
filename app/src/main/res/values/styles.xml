@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="spinnerStyle">
+        <item name="android:textAppearanceLarge">@dimen/spinner_text_Size</item>
+    </style>
+
 </resources>
