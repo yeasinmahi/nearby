@@ -1,9 +1,9 @@
 package com.gits.arafat.nearby.Activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +15,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gits.arafat.nearby.Api.GetNearbyPlacesData;
-import com.gits.arafat.nearby.Manifest;
 import com.gits.arafat.nearby.Others.Utility;
 import com.gits.arafat.nearby.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -56,7 +55,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 .addApi(LocationServices.API)
                 .build();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         if (Utility.checkLocationPermission(context)) return;
         if (mLocationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Utility.LOCATION_REFRESH_TIME, Utility.LOCATION_REFRESH_DISTANCE, new android.location.LocationListener() {

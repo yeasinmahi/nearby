@@ -101,10 +101,14 @@ public class Utility {
     public static void getPermission(Activity activity,String [] permissions){
         ActivityCompat.requestPermissions(activity, permissions, 1);
     }
-    public static boolean checkLocationPermission(Context context) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    public static boolean checkPermission(Context context,String permission) {
+        if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
             return true;
         }
+        return false;
+    }
+    public static boolean checkLocationPermission(Context context){
+        if (Utility.checkPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) && Utility.checkPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)) return true;
         return false;
     }
     public enum Type{
