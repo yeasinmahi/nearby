@@ -3,6 +3,7 @@ package com.gits.arafat.nearby.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -52,6 +53,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (Utility.checkLocationPermission(context)) return;
+        if (mLocationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Utility.LOCATION_REFRESH_TIME, Utility.LOCATION_REFRESH_DISTANCE, new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -89,10 +91,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
     private void init(){
         spinner= (Spinner) findViewById(R.id.searchSpinner);
+
         populateSpinner();
     }
     private void populateSpinner(){
-        spinner.setAdapter(new ArrayAdapter<Utility.Type>(this, android.R.layout.simple_spinner_item, Utility.Type.values()));
+        spinner.setAdapter(new ArrayAdapter<Utility.Type>(this, android.R.layout.simple_spinner_dropdown_item,  Utility.Type.values()));
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -120,18 +123,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private void getNearbyResult(double latitude, double longitude, Utility.Type search){
         String url = Utility.getUrl(latitude, longitude, search);
         Object[] DataTransfer = new Object[2];
+        if (mMap==null) return;
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
     }
     public void onClickPlusButton(View view){
+        if (mMap==null) return;
         if(Utility.increaseRadious()){
             search();
             Utility.zoomOnRadius(mMap);
         }
     }
     public void onClickMinusButton(View view){
+        if (mMap==null) return;
         if(Utility.decreaseRadious()){
             search();
             Utility.zoomOnRadius(mMap);
@@ -139,7 +145,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
     private void search(){
         if (Utility.getCurrentLocation() != null) {
-            getNearbyResult(Utility.getCurrentLocation().getLatitude(),Utility.getCurrentLocation().getLongitude(), Utility.Type.valueOf(spinner.getSelectedItem().toString()));
+            getNearbyResult(Utility.getCurrentLocation().getLatitude(),Utility.getCurrentLocation().getLongitude(), Utility.Type.valueOf(Utility.getLowerCaseWithReplace(spinner.getSelectedItem().toString())));
+
         }
     }
 

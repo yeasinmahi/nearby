@@ -92,9 +92,10 @@ public class Utility {
         // TODO: 29/03/2017
         String placesSearchStr = "https://maps.googleapis.com/maps/api/place/nearbysearch/" +
                 "json?location=" + latitude + "," + longitude +
-                "&radius="+RADIUS+"&sensor=true" +
-                "&types="+search +
-                "&key="+GOOGLE_API_KEY;
+                "&radius="+RADIUS+
+                "&types="+search.getFullName() +
+                "&key=AIzaSyC8biYWHCCndi47BZuFXom2C9rl4vVbTKY"+
+                "&sensor=false";
         return placesSearchStr;
     }
     public static void getPermission(Activity activity){
@@ -110,30 +111,48 @@ public class Utility {
         return false;
     }
     public enum Type{
-        atm,
-        bank,
-        bar,
-        bus_station,
-        cafe,
-        dentist,
-        doctor,
-        embassy,
-        food,
-        gym,
-        hospital,
-        library,
-        local_government_office,
-        mosque,
-        movie_theater,
-        museum,
-        park,
-        pharmacy,
-        police,
-        post_office,
-        restaurant,
-        school,
-        university,
-        zoo
+        atm("atm"),
+        bank("bank"),
+        bar("bar"),
+        bus_station("bus_station"),
+        cafe("cafe"),
+        dentist("dentist"),
+        doctor("doctor"),
+        embassy("embassy"),
+        food("food"),
+        gym("gym"),
+        hospital("hospital"),
+        library("library"),
+        local_government_office("local_government_office"),
+        mosque("mosque"),
+        movie_theater("movie_theater"),
+        museum("museum"),
+        park("park"),
+        pharmacy("pharmacy"),
+        police("police"),
+        post_office("post_office"),
+        restaurant("restaurant"),
+        school("school"),
+        university("university"),
+        zoo("zoo");
+
+        private String fullName;
+        Type(String s) {
+            this.fullName = getUpperCaseWithReplace(s);
+        }
+        @Override public String toString(){
+            return fullName;
+        }
+
+        public String getFullName() {
+            return getLowerCaseWithReplace(fullName);
+        }
+    }
+    public static String getUpperCaseWithReplace(String s){
+        return s.toUpperCase().replace("_"," ");
+    }
+    public static String getLowerCaseWithReplace(String s){
+        return s.toLowerCase().replace(" ","_");
     }
     public static void addCircle(GoogleMap mMap) {
         mMap.addCircle(new CircleOptions()
@@ -150,5 +169,11 @@ public class Utility {
     }
     public static void zoomOnRadius(GoogleMap mMap){
         mMap.animateCamera(CameraUpdateFactory.zoomTo(Utility.ZOOM));
+    }
+    public static Location getLocation(Double lat, double lon){
+        Location location = new Location("");
+        location.setLatitude(lat);
+        location.setLongitude(lon);
+        return location;
     }
 }

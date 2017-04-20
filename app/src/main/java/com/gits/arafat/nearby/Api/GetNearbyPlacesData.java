@@ -1,6 +1,7 @@
 package com.gits.arafat.nearby.Api;
 
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -60,11 +61,13 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
             double lat = Double.parseDouble(googlePlace.get("lat"));
             double lng = Double.parseDouble(googlePlace.get("lng"));
+
+            float distance = Utility.getCurrentLocation().distanceTo(Utility.getLocation(lat,lng));
             String placeName = googlePlace.get("place_name");
             //String vicinity = googlePlace.get("vicinity");
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(placeName);
+            markerOptions.title(placeName+", Distance: "+Math.round(distance)+" meter");
             mMap.addMarker(markerOptions);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             //move map camera
