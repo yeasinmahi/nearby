@@ -98,11 +98,8 @@ public class Utility {
                 "&sensor=false";
         return placesSearchStr;
     }
-    public static void getPermission(Activity activity){
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, 1);
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.INTERNET}, 1);
+    public static void getPermission(Activity activity,String [] permissions){
+        ActivityCompat.requestPermissions(activity, permissions, 1);
     }
     public static boolean checkLocationPermission(Context context) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

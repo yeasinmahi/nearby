@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.gits.arafat.nearby.Api.GetNearbyPlacesData;
+import com.gits.arafat.nearby.Manifest;
 import com.gits.arafat.nearby.Others.Utility;
 import com.gits.arafat.nearby.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,7 +42,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_main);
         context=this;
         init();
-        Utility.getPermission(this);
+        Utility.getPermission(this,new String[]{
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.INTERNET});
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
